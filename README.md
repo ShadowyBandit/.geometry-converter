@@ -4,6 +4,7 @@ This is a Blender addon designed to be able to import and export World of Warshi
 ## License
 This project has the MIT license:
 >A short and simple permissive license with conditions only requiring preservation of copyright and license notices. Licensed works, modifications, and larger works may be distributed under different terms and without source code.
+
 I really don't mind what is done with it, as long as it is not for profit or no credit is given to me.
 
 ## Warning
