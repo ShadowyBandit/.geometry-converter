@@ -5,7 +5,7 @@ This is a Blender addon designed to be able to import and export World of Warshi
 This project has the MIT license:
 >A short and simple permissive license with conditions only requiring preservation of copyright and license notices. Licensed works, modifications, and larger works may be distributed under different terms and without source code.
 
-I really don't mind what is done with it, as long as it is not for profit or no credit is given to me.
+I really don't mind what is done with it, as long as it is not for profit and credit is given to me.
 
 ## Warning
 This project is in early development, and might not even ever get finished, depending on whether others and I can ever decode the .geometry file format. Expect it to not work at all in early versions.
