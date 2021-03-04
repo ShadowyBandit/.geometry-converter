@@ -22,7 +22,7 @@ import bpy
 from bpy_extras.io_utils import ImportHelper, ExportHelper
 
 #=============================================================================================================
-#Module Registration and Append
+#Module Registration and Append to Menu
 
 def register():
     bpy.types.TOPBAR_MT_file_import.append(menuImport) #Importbar add option
@@ -46,47 +46,44 @@ def menuExport(self, context):
 #Import Module
 
 class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
+
+    #---------------------------------------------------------------------------------------------------------
+    #Class options
+    
     bl_idname = 'import.model' #Class id
-    bl_label = 'Import File' #Label
-    bl_description = 'Import Ship Model' #Discription
+    bl_label = 'Import File' #Class label
+    bl_description = 'Import Ship Model' #Class discription
+    
+    #---------------------------------------------------------------------------------------------------------
+    #Import tab options
+    
+    filter_glob : bpy.props.StringProperty(default = '*.geometry') #Filter file extension to only .geometry files
 
-    filename_ext = '.primitives' 
-    filter_glob : bpy.props.StringProperty( #Filter file extension
-        default = '*.primitives',
-        options = {'HIDDEN'}
-    )
-
-    import_empty : bpy.props.BoolProperty( #Checkbox
-        name = 'Import Empty',
-        description = 'Import empty axes, required for modding',
-        default = True
-    )
-
-    debug_mode : bpy.props.BoolProperty( #Checkbox
+    debug_mode : bpy.props.BoolProperty(
         name = 'Debug Mode',
         description = 'Will display extra info in the System Console',
         default = False
     )
 
-    disp_x : bpy.props.FloatProperty( #Float box
+    disp_x : bpy.props.FloatProperty(
         name = 'Position x',
         description = 'Do not change when modding, edit .visual instead',
         default = 0.0
     )
 
-    disp_y : bpy.props.FloatProperty( #Float box
+    disp_y : bpy.props.FloatProperty(
         name = 'Position y',
         description = 'Do not change when modding, edit .visual instead',
         default = 0.0
     )
 
-    disp_z : bpy.props.FloatProperty( #Float box
+    disp_z : bpy.props.FloatProperty(
         name = 'Position z',
         description = 'Do not change when modding, edit .visual instead',
         default = 0.0
     )
 
-    rot_x : bpy.props.FloatProperty( #Float box
+    rot_x : bpy.props.FloatProperty(
         name = 'Rotation x',
         description = 'Do not change when modding, edit .visual instead',
         default = 0.0,
@@ -94,7 +91,7 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
         max = 180
     )
 
-    rot_y : bpy.props.FloatProperty( #Float box
+    rot_y : bpy.props.FloatProperty(
         name = 'Rotation y',
         description = 'Do not change when modding, edit .visual instead',
         default = 0.0,
@@ -102,7 +99,7 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
         max = 180
     )
 
-    rot_z : bpy.props.FloatProperty( #Float box
+    rot_z : bpy.props.FloatProperty(
         name = 'Rotation z',
         description = 'Do not change when modding, edit .visual instead',
         default = 0.0,
@@ -110,31 +107,34 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
         max = 180
     )
 
-    disp_z : bpy.props.FloatProperty( #Float box
+    disp_z : bpy.props.FloatProperty(
         name = 'Position z',
         description = 'Do not change when modding, edit .visual instead',
         default = 0.0
     )
 
-    scale_x : bpy.props.FloatProperty( #Float box
+    scale_x : bpy.props.FloatProperty(
         name = 'Scale x',
         description = 'Do not change when modding, edit .visual instead',
         default = 1.0
     )
 
-    scale_y : bpy.props.FloatProperty( #Float box
+    scale_y : bpy.props.FloatProperty(
         name = 'Scale y',
         description = 'Do not change when modding, edit .visual instead',
         default = 1.0
     )
 
-    scale_z : bpy.props.FloatProperty( #Float box
+    scale_z : bpy.props.FloatProperty(
         name = 'Scale z',
         description = 'Do not change when modding, edit .visual instead',
         default = 1.0
     )
+    
+    #---------------------------------------------------------------------------------------------------------
+    #Methods
 
-    def execute(self, context): #Main method
+    def execute(self, context):
         print('='*48) #Divider
         print('[Import Info] Import %s' % os.path.basename(self.filepath)) #Filename info
         return {'FINISHED'}
@@ -152,5 +152,7 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
         layout.prop(self, 'scale_x')
         layout.prop(self, 'scale_y')
         layout.prop(self, 'scale_z')
-
+    
+    #---------------------------------------------------------------------------------------------------------
+    
 #=============================================================================================================
