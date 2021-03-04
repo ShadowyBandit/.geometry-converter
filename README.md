@@ -7,7 +7,7 @@ This project has the MIT license:
 I really don't mind what is done with it, as long as it is not for profit or no credit is given to me.
 
 ## Warning
-This project is in early development, and might not even ever get finished, depending on whether I and others can ever decode the .geometry file format. Expect it to not work at all in early versions.
+This project is in early development, and might not even ever get finished, depending on whether others and I can ever decode the .geometry file format. Expect it to not work at all in early versions.
 
 ## How to Add to Blender-Windows?
 In order to add addons to Blender, first you need to locate your `addons_contrib` folder. Depending on how you installed Blender, it can be located in different places.
