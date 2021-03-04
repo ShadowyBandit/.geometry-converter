@@ -19,45 +19,50 @@ bl_info = {
 #Imports
 
 import bpy
+import os
 from bpy_extras.io_utils import ImportHelper, ExportHelper
 
 #=============================================================================================================
 #Module Registration and Append to Menu
 
 def register():
-    bpy.types.TOPBAR_MT_file_import.append(menuImport) #Importbar add option
-    bpy.types.TOPBAR_MT_file_export.append(menuExport) #Exportbar add option
-    bpy.utils.register_class(Import_From_ModelFile) #Register import addon
-    #bpy.utils.register_class(Export_ModelFile) #Register export addon
+    bpy.types.TOPBAR_MT_file_import.append(menu_import) #Importbar add option
+    bpy.types.TOPBAR_MT_file_export.append(menu_export) #Exportbar add option
+    bpy.utils.register_class(ImportGeometry) #Register import addon
+    bpy.utils.register_class(ExportGeometry) #Register export addon
 
 def unregister():
-    bpy.types.TOPBAR_MT_file_import.remove(menuImport) #Importbar remove option
-    bpy.types.TOPBAR_MT_file_export.remove(menuExport) #Exportbar remove option
-    bpy.utils.unregister_class(Import_From_ModelFile) #Unregister import addon
-    #bpy.utils.unregister_class(Export_ModelFile) #Unregister export addon
+    bpy.types.TOPBAR_MT_file_import.remove(menu_import) #Importbar remove option
+    bpy.types.TOPBAR_MT_file_export.remove(menu_export) #Exportbar remove option
+    bpy.utils.unregister_class(ImportGeometry) #Unregister import addon
+    bpy.utils.unregister_class(ExportGeometry) #Unregister export addon
 
-def menuImport(self, context):
-    self.layout.operator('import.model', text = 'World of Warships BigWorld Model 2.0 (.geometry+.visual)')
+def menu_import(self, context):
+    self.layout.operator('import.model', text = 'World of Warships Model (.geometry+.visual)')
 
-def menuExport(self, context):
-    self.layout.operator('export.model', text='World of Warships BigWorld Model 2.0 (.geometry+.visual)')
+def menu_export(self, context):
+    self.layout.operator('export.model', text='World of Warships Model (.geometry+.visual)')
 
 #=============================================================================================================
 #Import Module
 
-class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
+class ImportGeometry(bpy.types.Operator, ImportHelper):
 
     #---------------------------------------------------------------------------------------------------------
     #Class options
     
     bl_idname = 'import.model' #Class id
     bl_label = 'Import File' #Class label
-    bl_description = 'Import Ship Model' #Class discription
+    bl_description = 'Import a Ship Geometry File' #Class discription
     
     #---------------------------------------------------------------------------------------------------------
-    #Import tab options
-    
-    filter_glob : bpy.props.StringProperty(default = '*.geometry') #Filter file extension to only .geometry files
+    #Window tab options
+
+    filename_ext = '.geometry'
+    filter_glob : bpy.props.StringProperty( #Filter file extension to only .geometry files
+        default = '*.geometry',
+        options = {'HIDDEN'}
+    )
 
     debug_mode : bpy.props.BoolProperty(
         name = 'Debug Mode',
@@ -107,12 +112,6 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
         max = 180
     )
 
-    disp_z : bpy.props.FloatProperty(
-        name = 'Position z',
-        description = 'Do not change when modding, edit .visual instead',
-        default = 0.0
-    )
-
     scale_x : bpy.props.FloatProperty(
         name = 'Scale x',
         description = 'Do not change when modding, edit .visual instead',
@@ -135,13 +134,12 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
     #Methods
 
     def execute(self, context):
-        print('='*48) #Divider
+        print('='*100) #Divider
         print('[Import Info] Import %s' % os.path.basename(self.filepath)) #Filename info
         return {'FINISHED'}
 
-    def draw(self, context): #Edit the file import window
+    def draw(self, context): #Modify the file import window
         layout = self.layout
-        layout.prop(self, 'import_empty')
         layout.prop(self, 'debug_mode')
         layout.prop(self, 'disp_x')
         layout.prop(self, 'disp_y')
@@ -156,3 +154,41 @@ class Import_From_ModelFile(bpy.types.Operator, ImportHelper):
     #---------------------------------------------------------------------------------------------------------
     
 #=============================================================================================================
+#Export Module
+
+class ExportGeometry(bpy.types.Operator, ExportHelper):
+
+    #---------------------------------------------------------------------------------------------------------
+    #Class options
+    
+    bl_idname = 'export.model' #Class id
+    bl_label = 'Export Model' #Class Label
+    bl_description = 'Export BigWorld Model' #Class Description
+
+    filename_ext = '.geometry'
+    filter_glob : bpy.props.StringProperty( #Filter file extension to only .geometry files
+        default = '*.geometry',
+        options = {'HIDDEN'}
+    )
+    
+    #---------------------------------------------------------------------------------------------------------
+    #Window tab options
+
+    debug_mode : bpy.props.BoolProperty(
+        name = 'Debug Mode',
+        description = 'Will display extra info in the System Console',
+        default = False
+    )
+
+    @classmethod
+    def poll(self, context): #Check if selected object is a parent and is empty, otherwise export option is greyed out
+        return True
+
+    def execute(self, context):
+        print('='*48) #Divider
+        print('[Export Info] Export %s' % os.path.basename(self.filepath)) #Filename info
+        return {'FINISHED'}
+ 
+    def draw(self, context): #Modify the file export window
+        layout = self.layout
+        layout.prop(self, 'debug_mode')
