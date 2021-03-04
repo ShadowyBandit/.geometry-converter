@@ -2,12 +2,12 @@
 #Blender Addon Metadata
 
 bl_info = {
-    'name': 'BigWorld Model 2.0 Converter (.geometry)',
-    'description': 'World of Warships BigWorld Model 2.0 Import/Export Addon',
+    'name': 'Import-Export: Bigworld Geometry format',
+    'description': 'Import-Export World of Warships Geometry files',
     'author': 'ShadowyBandit',
     'version': (0, 0, 1),
     'blender': (2, 91, 0),
-    'location': 'File > Import-Export',
+    'location': 'File > Import/Export',
     'warning': 'In progress',
     'wiki_url': 'https://www.google.com/',
     "tracker_url": "https://www.google.com/",
