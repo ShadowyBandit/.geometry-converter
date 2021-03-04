@@ -15,7 +15,7 @@ This project is in early development, and might not even ever get finished, depe
    * If you installed Blender with the [installer](https://www.blender.org/download/), like most people, then you can open the `addons_contrib` folder at `C:Program Files\Blender Foundation\Blender x.xx\x.xx\scripts\addons_contrib`
    * If you built Blender with Visual Studio, then you can open the `addons_contrib` folder at `C:\blender-git\build_windows_x64_vc16_Release\bin\Release\x.xx\scripts\addons_contrib`, provided you followed [this tutorial](https://wiki.blender.org/wiki/Building_Blender). If you didn't, I assume you are very experienced and already know where it is.
 
-2. Now, download the repository and copy the `BigWorld Model 2.0 Converter (.geometry)` folder to the `addon_contrib` folder. 
+2. Now, download the repository and copy the `io_mesh_geometry` folder to the `addon_contrib` folder. 
 3. Finally, start Blender and open the Preferences. 
 4. Click on the Add-ons tab located on the left. 
 5. Click on the Testing option at the top.
