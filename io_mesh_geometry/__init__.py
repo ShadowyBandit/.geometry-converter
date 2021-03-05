@@ -1,4 +1,4 @@
-#=============================================================================================================
+    
 #Blender Addon Metadata
 
 bl_info = {
@@ -20,7 +20,9 @@ bl_info = {
 
 import bpy
 import os
+import math
 from bpy_extras.io_utils import ImportHelper, ExportHelper
+from .import_geometry import ModelLoader
 
 #=============================================================================================================
 #Module Registration and Append to Menu
@@ -135,7 +137,12 @@ class ImportGeometry(bpy.types.Operator, ImportHelper):
 
     def execute(self, context):
         print('='*100) #Divider
-        print('[Import Info] Import %s' % os.path.basename(self.filepath)) #Filename info
+        geometry_model = ModelLoader()
+        geometry_model.load_geometry(self.filepath, self.debug_mode,
+                                    (self.disp_x, self.disp_y, self.disp_z),
+                                    (self.rot_x*math.pi/180, self.rot_y*math.pi/180, self.rot_z*math.pi/180), #Convert from degrees into radians
+                                    (self.scale_x, self.scale_y, self.scale_z))
+        print('[Import Info] Imported %s' % os.path.basename(self.filepath)) #Filename info
         return {'FINISHED'}
 
     def draw(self, context): #Modify the file import window
@@ -181,7 +188,7 @@ class ExportGeometry(bpy.types.Operator, ExportHelper):
     )
 
     @classmethod
-    def poll(self, context): #Check if selected object is a parent and is empty, otherwise export option is greyed out
+    def poll(self, context): #Check if some condition is met, otherwise export option is greyed out
         return True
 
     def execute(self, context):
@@ -192,3 +199,5 @@ class ExportGeometry(bpy.types.Operator, ExportHelper):
     def draw(self, context): #Modify the file export window
         layout = self.layout
         layout.prop(self, 'debug_mode')
+
+#=============================================================================================================
