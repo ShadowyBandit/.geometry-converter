@@ -1,4 +1,4 @@
-# BigWorld Model 2.0 Converter(.geometry)
+# BigWorld Model 2.0 Converter (.geometry)
 This is a Blender addon designed to be able to import and export World of Warships' .geometry+.visual files, designed for mod authors.
 
 ## License
