@@ -60,9 +60,9 @@ class ImportGeometry(bpy.types.Operator, ImportHelper):
     #---------------------------------------------------------------------------------------------------------
     #Window tab options
 
-    filename_ext = '.geometry'
+    filename_ext = ''
     filter_glob : bpy.props.StringProperty( #Filter file extension to only .geometry files
-        default = '*.geometry',
+        default = '*.geometry;*.visual', 
         options = {'HIDDEN'}
     )
 
@@ -137,12 +137,12 @@ class ImportGeometry(bpy.types.Operator, ImportHelper):
 
     def execute(self, context):
         print('='*100) #Divider
+        print('[Import Info] Import %s' % os.path.basename(self.filepath)) #Filename info
         geometry_model = ModelLoader()
         geometry_model.load_geometry(self.filepath, self.debug_mode,
                                     (self.disp_x, self.disp_y, self.disp_z),
                                     (self.rot_x*math.pi/180, self.rot_y*math.pi/180, self.rot_z*math.pi/180), #Convert from degrees into radians
                                     (self.scale_x, self.scale_y, self.scale_z))
-        print('[Import Info] Imported %s' % os.path.basename(self.filepath)) #Filename info
         return {'FINISHED'}
 
     def draw(self, context): #Modify the file import window
@@ -172,9 +172,9 @@ class ExportGeometry(bpy.types.Operator, ExportHelper):
     bl_label = 'Export Model' #Class Label
     bl_description = 'Export BigWorld Model' #Class Description
 
-    filename_ext = '.geometry'
+    filename_ext = ''
     filter_glob : bpy.props.StringProperty( #Filter file extension to only .geometry files
-        default = '*.geometry',
+        default = '*.geometry;*.visual',
         options = {'HIDDEN'}
     )
     
