@@ -21,5 +21,5 @@ class ModelLoader:
         
         if not os.path.exists(visual_path): #If .visual doesn't exist
             print('[Import Error] %s does not exist. Check the directory.' %visual_filename)
-        else if not os.path.exists(geometry_path): #If .geometry doesn't exist
+        elif not os.path.exists(geometry_path): #If .geometry doesn't exist
             print('[Import Error] %s does not exist. Check the directory.' %geometry_filename)
