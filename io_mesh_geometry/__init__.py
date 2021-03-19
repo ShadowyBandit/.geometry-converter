@@ -1,4 +1,3 @@
-    
 #Blender Addon Metadata
 
 bl_info = {
