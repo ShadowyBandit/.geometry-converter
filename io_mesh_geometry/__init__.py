@@ -8,8 +8,8 @@ bl_info = {
     'blender': (2, 91, 0),
     'location': 'File > Import/Export',
     'warning': 'In progress',
-    'wiki_url': 'https://www.google.com/',
-    "tracker_url": "https://www.google.com/",
+    'wiki_url': 'https://github.com/ShadowyBandit/.geometry-converter/wiki',
+    "tracker_url": "https://github.com/ShadowyBandit/.geometry-converter/issues",
     "support": "COMMUNITY",
     'category': 'Import-Export',
 }

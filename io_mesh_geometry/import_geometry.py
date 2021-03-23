@@ -4,6 +4,7 @@
 import os
 import bpy
 import xml.etree.ElementTree as ET
+from struct import unpack
 
 #=============================================================================================================
 # Loader
@@ -15,6 +16,9 @@ class ModelLoader:
     _index_section_count = None
     _cmodl_section_count = None
     _armor_section_count = None
+    _visual_file = None
+    _geometry_file = None
+    
     def load_geometry(self, file_path, debug_mode, displacement, rotation, scale):
         file_dir = os.path.dirname(file_path) #Directory of the selected file
         
@@ -30,12 +34,12 @@ class ModelLoader:
         elif not os.path.exists(geometry_path): #If .geometry doesn't exist
             print('[Import Error] %s does not exist. Check the directory.' %geometry_filename)
         else: #If both exist
-            _visual_file = open(visual_path, 'rb')
-            _geometry_file = open(geometry_path, 'rb')
+            self._visual_file = open(visual_path, 'rb')
+            self._geometry_file = open(geometry_path, 'rb')
 
-            _vertex_type_count=unpack('<i', self.__pfile.read(4))
-            _index_type_count=unpack('<i', self.__pfile.read(4))
-            _vertex_section_count=unpack('<i', self.__pfile.read(4))
-            _index_section_count=unpack('<i', self.__pfile.read(4))
-            _cmodl_section_count=unpack('<i', self.__pfile.read(4))
-            _armor_section_count=unpack('<i', self.__pfile.read(4))
+            self.vertex_type_count=unpack('<i', self._geometry_file.read(4))[0]
+            self.index_type_count=unpack('<i', self._geometry_file.read(4))[0]
+            self.vertex_section_count=unpack('<i', self._geometry_file.read(4))[0]
+            self.index_section_count=unpack('<i', self._geometry_file.read(4))[0]
+            self.cmodl_section_count=unpack('<i', self._geometry_file.read(4))[0]
+            self.armor_section_count=unpack('<i', self._geometry_file.read(4))[0]
