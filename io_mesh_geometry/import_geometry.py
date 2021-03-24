@@ -10,12 +10,8 @@ from struct import unpack
 # Loader
 
 class ModelLoader:
-    _vertex_type_count = None
-    _index_type_count = None
-    _vertex_section_count = None
-    _index_section_count = None
-    _cmodl_section_count = None
-    _armor_section_count = None
+    _counts = []
+    
     _visual_file = None
     _geometry_file = None
     
@@ -37,9 +33,5 @@ class ModelLoader:
             self._visual_file = open(visual_path, 'rb')
             self._geometry_file = open(geometry_path, 'rb')
 
-            self.vertex_type_count=unpack('<i', self._geometry_file.read(4))[0]
-            self.index_type_count=unpack('<i', self._geometry_file.read(4))[0]
-            self.vertex_section_count=unpack('<i', self._geometry_file.read(4))[0]
-            self.index_section_count=unpack('<i', self._geometry_file.read(4))[0]
-            self.cmodl_section_count=unpack('<i', self._geometry_file.read(4))[0]
-            self.armor_section_count=unpack('<i', self._geometry_file.read(4))[0]
+            for i in range(6):
+                self._counts.append(unpack('<i', self._geometry_file.read(4))[0])
