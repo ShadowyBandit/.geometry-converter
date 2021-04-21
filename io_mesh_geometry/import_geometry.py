@@ -57,7 +57,24 @@ class ModelLoader:
                     'vertices_count'   : unpack('<i', self._geometry_file.read(4))[0]
                 })
 
+            for i in range(self._counts[3]): #Read vertex info
+                self._index_info.append({
+                    'name'  : self._geometry_file.read(4).hex(),
+                    'type_location' : unpack('<i', self._geometry_file.read(4))[0],
+                    'position' : unpack('<i', self._geometry_file.read(4))[0],
+                    'indices_count'   : unpack('<i', self._geometry_file.read(4))[0]
+                })
+
+            for i in range(self._counts[0]): #Read vertex info
+                self._index_info.append({
+                    'name'  : self._geometry_file.read(4).hex(),
+                    'type_location' : unpack('<i', self._geometry_file.read(4))[0],
+                    'position' : unpack('<i', self._geometry_file.read(4))[0],
+                    'indices_count'   : unpack('<i', self._geometry_file.read(4))[0]
+                })
+
         print(self._counts)
         print(self._table_positions)
         print(self._section_positions)
         print(self._vertex_info)
+        print(self._index_info)
