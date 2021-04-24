@@ -19,6 +19,9 @@ class ModelLoader:
 
     _vertex_info = []
     _index_info = []
+
+    _vertex_bloc_info = []
+    _index_bloc_info = []
     
     def load_geometry(self, file_path, debug_mode, displacement, rotation, scale):
         file_dir = os.path.dirname(file_path) #Directory of the selected file
@@ -66,15 +69,27 @@ class ModelLoader:
                 })
 
             for i in range(self._counts[0]): #Read vertex info
-                self._index_info.append({
-                    'name'  : self._geometry_file.read(4).hex(),
-                    'type_location' : unpack('<i', self._geometry_file.read(4))[0],
-                    'position' : unpack('<i', self._geometry_file.read(4))[0],
-                    'indices_count'   : unpack('<i', self._geometry_file.read(4))[0]
+                self._vertex_bloc_info.append({
+                    'vertex_bloc_location'  : unpack('<i', self._geometry_file.read(4))[0]
                 })
-
+                self._geometry_file.seek(4, 1)
+                self._vertex_bloc_info.append({
+                    'vertex_type_string_length'  : unpack('<i', self._geometry_file.read(4))[0]
+                })
+                self._geometry_file.seek(4, 1)
+                self._vertex_bloc_info.append({
+                    'vertex_type_string_location'  : unpack('<i', self._geometry_file.read(4))[0]
+                })
+                self._geometry_file.seek(4, 1)
+                self._vertex_bloc_info.append({
+                    'vertex_bloc_length'  : unpack('<i', self._geometry_file.read(4))[0],
+                    'single_vertex_length'  : unpack('<h', self._geometry_file.read(2))[0]
+                })
+                self._geometry_file.seek(2, 1)
+                
         print(self._counts)
         print(self._table_positions)
         print(self._section_positions)
         print(self._vertex_info)
         print(self._index_info)
+        print(self._vertex_bloc_info)
