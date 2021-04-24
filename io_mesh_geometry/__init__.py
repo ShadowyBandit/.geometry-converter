@@ -39,10 +39,10 @@ def unregister():
     bpy.utils.unregister_class(ExportGeometry) #Unregister export addon
 
 def menu_import(self, context):
-    self.layout.operator('import.model', text = 'World of Warships Model (.geometry+.visual)')
+    self.layout.operator('import.model', text = 'World of Warships Model (.geometry+.visual)', icon='MOD_OCEAN')
 
 def menu_export(self, context):
-    self.layout.operator('export.model', text='World of Warships Model (.geometry+.visual)')
+    self.layout.operator('export.model', text='World of Warships Model (.geometry+.visual)', icon='MOD_OCEAN')
 
 #=============================================================================================================
 #Import Module
