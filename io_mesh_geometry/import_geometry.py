@@ -10,18 +10,19 @@ from struct import unpack
 # Loader
 
 class ModelLoader:
-    _visual_file = None
-    _geometry_file = None
-    
-    _counts = [] #Number of vertex types, index types, vertex blocs, index blocs, collision blocs, and armor blocs
-    _table_positions = [] #Locations of the info tables for vertices and indices
-    _section_positions = [] #Locations of each section
+    def __init__(self):
+        self.visual_file = None
+        self.geometry_file = None
 
-    _vertex_info = []
-    _index_info = []
+        self.counts = [] #Number of vertex types, index types, vertex blocs, index blocs, collision blocs, and armor blocs
+        self.info_positions = [] #Locations of the info tables for vertices and indices
+        self.section_positions = [] #Locations of each section
+        
+        self.vertex_info = []
+        self.index_info = []
 
-    _vertex_bloc_info = []
-    _index_bloc_info = []
+        self.vertex_bloc_info = []
+        self.index_bloc_info = []
     
     def load_geometry(self, file_path, debug_mode, displacement, rotation, scale):
         file_dir = os.path.dirname(file_path) #Directory of the selected file
@@ -38,58 +39,63 @@ class ModelLoader:
         elif not os.path.exists(geometry_path): #If .geometry doesn't exist
             print('[Import Error] %s does not exist. Check the directory.' %geometry_filename)
         else: #If both exist
-            self._visual_file = open(visual_path, 'rb')
-            self._geometry_file = open(geometry_path, 'rb')
+            self.visual_file = open(visual_path, 'rb')
+            self.geometry_file = open(geometry_path, 'rb')
 
             for i in range(6): #Read number of vertex types, index types, vertex blocs, index blocs, collision blocs, and armor blocs
-                self._counts.append(unpack('<i', self._geometry_file.read(4))[0])
+                self.counts.append(unpack('<i', self.geometry_file.read(4))[0])
 
             for i in range(2): #Read info table locations
-                self._table_positions.append(unpack('<i', self._geometry_file.read(4))[0])
-                self._geometry_file.seek(4, 1)
+                self.info_positions.append(unpack('<i', self.geometry_file.read(4))[0])
+                self.geometry_file.seek(4, 1)
 
             for i in range(4): #Read section locations
-                self._section_positions.append(unpack('<i', self._geometry_file.read(4))[0])
-                self._geometry_file.seek(4, 1)
+                self.section_positions.append(unpack('<i', self.geometry_file.read(4))[0])
+                self.geometry_file.seek(4, 1)
 
-            for i in range(self._counts[2]): #Read vertex info
-                self._vertex_info.append({
-                    'name'  : self._geometry_file.read(4).hex(),
-                    'type_location' : unpack('<i', self._geometry_file.read(4))[0],
-                    'position' : unpack('<i', self._geometry_file.read(4))[0],
-                    'vertices_count'   : unpack('<i', self._geometry_file.read(4))[0]
-                })
-
-            for i in range(self._counts[3]): #Read vertex info
-                self._index_info.append({
-                    'name'  : self._geometry_file.read(4).hex(),
-                    'type_location' : unpack('<i', self._geometry_file.read(4))[0],
-                    'position' : unpack('<i', self._geometry_file.read(4))[0],
-                    'indices_count'   : unpack('<i', self._geometry_file.read(4))[0]
+            for i in range(self.counts[2]): #Read vertex info
+                self.vertex_info.append({
+                    'name'  : self.geometry_file.read(4).hex(),
+                    'type_location' : unpack('<i', self.geometry_file.read(4))[0],
+                    'position' : unpack('<i', self.geometry_file.read(4))[0],
+                    'vertices_count'   : unpack('<i', self.geometry_file.read(4))[0]
                 })
 
-            for i in range(self._counts[0]): #Read vertex info
-                self._vertex_bloc_info.append({
-                    'vertex_bloc_location'  : unpack('<i', self._geometry_file.read(4))[0]
+            for i in range(self.counts[3]): #Read index info
+                self.index_info.append({
+                    'name'  : self.geometry_file.read(4).hex(),
+                    'type_location' : unpack('<i', self.geometry_file.read(4))[0],
+                    'position' : unpack('<i', self.geometry_file.read(4))[0],
+                    'indices_count'   : unpack('<i', self.geometry_file.read(4))[0]
                 })
-                self._geometry_file.seek(4, 1)
-                self._vertex_bloc_info.append({
-                    'vertex_type_string_length'  : unpack('<i', self._geometry_file.read(4))[0]
-                })
-                self._geometry_file.seek(4, 1)
-                self._vertex_bloc_info.append({
-                    'vertex_type_string_location'  : unpack('<i', self._geometry_file.read(4))[0]
-                })
-                self._geometry_file.seek(4, 1)
-                self._vertex_bloc_info.append({
-                    'vertex_bloc_length'  : unpack('<i', self._geometry_file.read(4))[0],
-                    'single_vertex_length'  : unpack('<h', self._geometry_file.read(2))[0]
-                })
-                self._geometry_file.seek(2, 1)
                 
-        print(self._counts)
-        print(self._table_positions)
-        print(self._section_positions)
-        print(self._vertex_info)
-        print(self._index_info)
-        print(self._vertex_bloc_info)
+            for i in range(self.counts[0]): #Read vertex bloc info
+                self.vertex_bloc_info.append({
+                    'vertex_bloc_location'  : unpack('<i', self.geometry_file.read(4))[0]
+                })
+                self.geometry_file.seek(4, 1)
+                self.vertex_bloc_info.append({
+                    'vertex_type_string_length'  : unpack('<i', self.geometry_file.read(4))[0]
+                })
+                self.geometry_file.seek(4, 1)
+                self.vertex_bloc_info.append({
+                    'vertex_type_string_location'  : unpack('<i', self.geometry_file.read(4))[0]
+                })
+                self.geometry_file.seek(4, 1)
+                self.vertex_bloc_info.append({
+                    'vertex_bloc_length'  : unpack('<i', self.geometry_file.read(4))[0],
+                    'single_vertex_length'  : unpack('<h', self.geometry_file.read(2))[0]
+                })
+                self.geometry_file.seek(2, 1)
+                
+        print(self.counts)
+        print("----------------------------------------------------------------------------------------------------")
+        print(self.info_positions)
+        print("----------------------------------------------------------------------------------------------------")
+        print(self.section_positions)
+        print("----------------------------------------------------------------------------------------------------")
+        print(self.vertex_info)
+        print("----------------------------------------------------------------------------------------------------")
+        print(self.index_info)
+        print("----------------------------------------------------------------------------------------------------")
+        print(self.vertex_bloc_info)
