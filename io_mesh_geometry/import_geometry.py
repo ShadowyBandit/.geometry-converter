@@ -3,6 +3,7 @@
 
 import os
 import bpy
+import codecs
 import xml.etree.ElementTree as ET
 from struct import unpack
 
@@ -21,7 +22,7 @@ class ModelLoader:
         self.vertex_info = []
         self.index_info = []
 
-        self.vertex_bloc_info = []
+        self.type_bloc_info = []
         self.index_bloc_info = []
     
     def load_geometry(self, file_path, debug_mode, displacement, rotation, scale):
@@ -56,7 +57,7 @@ class ModelLoader:
             for i in range(self.counts[2]): #Read vertex info
                 self.vertex_info.append({
                     'name'  : self.geometry_file.read(4).hex(),
-                    'type_location' : unpack('<i', self.geometry_file.read(4))[0],
+                    'type_number' : unpack('<i', self.geometry_file.read(4))[0],
                     'position' : unpack('<i', self.geometry_file.read(4))[0],
                     'vertices_count'   : unpack('<i', self.geometry_file.read(4))[0]
                 })
@@ -64,25 +65,44 @@ class ModelLoader:
             for i in range(self.counts[3]): #Read index info
                 self.index_info.append({
                     'name'  : self.geometry_file.read(4).hex(),
-                    'type_location' : unpack('<i', self.geometry_file.read(4))[0],
+                    'type_number' : unpack('<i', self.geometry_file.read(4))[0],
                     'position' : unpack('<i', self.geometry_file.read(4))[0],
                     'indices_count'   : unpack('<i', self.geometry_file.read(4))[0]
                 })
                 
             for i in range(self.counts[0]): #Read vertex bloc info
-                self.vertex_bloc_info.append({
+                self.type_bloc_info.append({
                     'vertex_bloc_location'  : unpack('<i', self.geometry_file.read(4))[0]
                 })
                 self.geometry_file.seek(4, 1)
-                self.vertex_bloc_info.append({
+                self.type_bloc_info.append({
                     'vertex_type_string_length'  : unpack('<i', self.geometry_file.read(4))[0]
                 })
                 self.geometry_file.seek(4, 1)
-                self.vertex_bloc_info.append({
+                self.type_bloc_info.append({
                     'vertex_type_string_location'  : unpack('<i', self.geometry_file.read(4))[0]
                 })
                 self.geometry_file.seek(4, 1)
-                self.vertex_bloc_info.append({
+                self.type_bloc_info.append({
+                    'vertex_bloc_length'  : unpack('<i', self.geometry_file.read(4))[0],
+                    'single_vertex_length'  : unpack('<h', self.geometry_file.read(2))[0]
+                })
+                self.geometry_file.seek(2, 1)
+
+            for i in range(self.counts[0]): #Read vertex bloc info
+                self.type_bloc_info.append({
+                    'vertex_bloc_location'  : unpack('<i', self.geometry_file.read(4))[0]
+                })
+                self.geometry_file.seek(4, 1)
+                self.type_bloc_info.append({
+                    'vertex_type_string_length'  : unpack('<i', self.geometry_file.read(4))[0]
+                })
+                self.geometry_file.seek(4, 1)
+                self.type_bloc_info.append({
+                    'vertex_type_string_location'  : unpack('<i', self.geometry_file.read(4))[0]
+                })
+                self.geometry_file.seek(4, 1)
+                self.type_bloc_info.append({
                     'vertex_bloc_length'  : unpack('<i', self.geometry_file.read(4))[0],
                     'single_vertex_length'  : unpack('<h', self.geometry_file.read(2))[0]
                 })
@@ -98,4 +118,4 @@ class ModelLoader:
         print("----------------------------------------------------------------------------------------------------")
         print(self.index_info)
         print("----------------------------------------------------------------------------------------------------")
-        print(self.vertex_bloc_info)
+        print(self.type_bloc_info)
