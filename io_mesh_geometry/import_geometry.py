@@ -74,39 +74,20 @@ class ModelLoader:
                 self.type_bloc_info.append({
                     'vertex_bloc_location'  : unpack('<i', self.geometry_file.read(4))[0]
                 })
-                self.geometry_file.seek(4, 1)
+                self.geometry_file.seek(4, 1) #Zeros
                 self.type_bloc_info.append({
                     'vertex_type_string_length'  : unpack('<i', self.geometry_file.read(4))[0]
                 })
-                self.geometry_file.seek(4, 1)
+                self.geometry_file.seek(4, 1) #Zeros
                 self.type_bloc_info.append({
                     'vertex_type_string_location'  : unpack('<i', self.geometry_file.read(4))[0]
                 })
-                self.geometry_file.seek(4, 1)
+                self.geometry_file.seek(4, 1) #Zeros
                 self.type_bloc_info.append({
                     'vertex_bloc_length'  : unpack('<i', self.geometry_file.read(4))[0],
                     'single_vertex_length'  : unpack('<h', self.geometry_file.read(2))[0]
                 })
-                self.geometry_file.seek(2, 1)
-
-            for i in range(self.counts[0]): #Read vertex bloc info
-                self.type_bloc_info.append({
-                    'vertex_bloc_location'  : unpack('<i', self.geometry_file.read(4))[0]
-                })
-                self.geometry_file.seek(4, 1)
-                self.type_bloc_info.append({
-                    'vertex_type_string_length'  : unpack('<i', self.geometry_file.read(4))[0]
-                })
-                self.geometry_file.seek(4, 1)
-                self.type_bloc_info.append({
-                    'vertex_type_string_location'  : unpack('<i', self.geometry_file.read(4))[0]
-                })
-                self.geometry_file.seek(4, 1)
-                self.type_bloc_info.append({
-                    'vertex_bloc_length'  : unpack('<i', self.geometry_file.read(4))[0],
-                    'single_vertex_length'  : unpack('<h', self.geometry_file.read(2))[0]
-                })
-                self.geometry_file.seek(2, 1)
+                self.geometry_file.seek(2, 1) #Endmark
                 
         print(self.counts)
         print("----------------------------------------------------------------------------------------------------")
