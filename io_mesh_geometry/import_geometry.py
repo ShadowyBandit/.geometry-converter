@@ -15,17 +15,17 @@ class ModelLoader:
         self.visual_file = None
         self.geometry_file = None
 
-        self.counts = [] #Number of vertex types, index types, vertex blocs, index blocs, collision blocs, and armor blocs
-        self.info_positions = [] #Locations of the info tables for vertices and indices
-        self.section_positions = [] #Locations of each section
+        self.counts = [] 
+        self.info_positions = [] 
+        self.section_positions = [] 
         
         self.vertex_info = []
         self.index_info = []
 
-        self.vertex_type_bloc_info = []
-        self.index_bloc_info = []
+        self.vertex_type_info = []
+        self.index_type_info = []
     
-    def load_geometry(self, file_path, debug_mode, displacement, rotation, scale):
+    def load_geometry(self, file_path, displacement, rotation, scale):
         file_dir = os.path.dirname(file_path) #Directory of the selected file
         
         base_filename = os.path.basename(file_path) #Base name of the selected file
@@ -54,6 +54,7 @@ class ModelLoader:
                 self.section_positions.append(unpack('<i', self.geometry_file.read(4))[0])
                 self.geometry_file.seek(4, 1)
 
+            bookmark = self.geometry_file.tell()
             for i in range(self.counts[2]): #Read vertex info
                 self.vertex_info.append({
                     'name'  : self.geometry_file.read(4).hex(),
@@ -62,6 +63,7 @@ class ModelLoader:
                     'vertices_count'   : unpack('<i', self.geometry_file.read(4))[0]
                 })
 
+            bookmark = self.geometry_file.tell()
             for i in range(self.counts[3]): #Read index info
                 self.index_info.append({
                     'name'  : self.geometry_file.read(4).hex(),
@@ -71,36 +73,51 @@ class ModelLoader:
                 })
                 
             for i in range(self.counts[0]): #Read vertex bloc info
-                self.vertex_type_bloc_info.append({
-                    'vertex_bloc_location'  : unpack('<ixxxx', self.geometry_file.read(8))[0],
+                bookmark = self.geometry_file.tell()
+                self.vertex_type_info.append({
+                    'vertex_type_location'  : unpack('<ixxxx', self.geometry_file.read(8))[0],
                     'vertex_type_string_length' : unpack('<ixxxx', self.geometry_file.read(8))[0],
                     'vertex_type_string_location' : unpack('<ixxxx', self.geometry_file.read(8))[0],
-                    'vertex_bloc_length'   : unpack('<i', self.geometry_file.read(4))[0],
-                    'single_vertex_length'   : unpack('<hxx', self.geometry_file.read(4))[0]
+                    'vertex_type_length'   : unpack('<i', self.geometry_file.read(4))[0],
+                    'vertex_length'   : unpack('<hxx', self.geometry_file.read(4))[0]
                 })
-                    
-            print(self.counts)
+
             print("----------------------------------------------------------------------------------------------------")
-            print(self.info_positions)
+            temp_print_list=['Vertex type number', 'Index type number', 'Vertex bloc number', 'Index bloc number', 'Collision bloc number', 'Armor bloc number']
+            [print(temp_print_list[i], ':', self.counts[i]) for i in range(6)]
             print("----------------------------------------------------------------------------------------------------")
-            print(self.section_positions)
+            temp_print_list=['Vertex info location', 'Index info location']
+            [print(temp_print_list[i], ':', self.info_positions[i]) for i in range(2)]
             print("----------------------------------------------------------------------------------------------------")
-            print(self.vertex_info)
+            temp_print_list=['Vertex data location', 'Index data location', 'Collision data location', 'Armor data location']
+            [print(temp_print_list[i], ':', self.section_positions[i]) for i in range(4)]
             print("----------------------------------------------------------------------------------------------------")
-            print(self.index_info)
+            for single_vertex_info in self.vertex_info:
+                temp_print_i = 0
+                temp_print_list=['Name', 'Type index', 'Position', 'Vertices count']
+                for value in single_vertex_info.values():
+                    print(temp_print_list[temp_print_i], ':', value)
+                    temp_print_i+=1
+                print('')
             print("----------------------------------------------------------------------------------------------------")
-            print(self.vertex_type_bloc_info)
+            for single_vertex_type_info in self.vertex_type_info:
+                temp_print_i = 0
+                temp_print_list=['Type location', 'Type string length', 'Type string location', 'Type length', 'Individual length']
+                for value in single_vertex_type_info.values():
+                    print(temp_print_list[temp_print_i], ':', value)
+                    temp_print_i+=1
+                print('')
             print("----------------------------------------------------------------------------------------------------")
 
-            current_type = ""
-            current_type_index = 0
-##            for i in range(self.vertex_info):
-##                if vertex_info[i]['position'] > vertex_type_bloc_info[current_type_index]['vertex_bloc_location']:
-##                    current_type_index++
-##                bookmark = self.geometry_file.tell()
-##                self.seek()
-##                current_type = 
-##                print('%s: %s' % vertex_info[i]['name'])
+##            current_type = ""
+##            current_type_index = 0
+##            for i in range(len(self.vertex_info)):
+##                if self.vertex_info[i]['position'] > self.vertex_type_info[current_type_index]['vertex_type_location']:
+##                    current_type_index+=1
+##                
+##                self.geometry_file.seek(self.vertex_type_info[current_type_index]['vertex_type_string_location'])
+##                current_type = self.geometry_file.read(self.vertex_type_info[current_type_index]['vertex_type_string_length']).decode('utf-8')
+##                print('%s: %s' % (self.vertex_info[i]['name'], current_type))
             
             vertices = [(0, 0, 0),
                         (0, 0, 1),

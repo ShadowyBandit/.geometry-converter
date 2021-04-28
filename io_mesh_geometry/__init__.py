@@ -85,12 +85,6 @@ class ImportGeometry(bpy.types.Operator, ImportHelper):
         options = {'HIDDEN'}
     )
 
-    debug_mode : bpy.props.BoolProperty(
-        name = 'Debug Mode',
-        description = 'Will display extra info in the System Console',
-        default = False
-    )
-
     disp_x : bpy.props.FloatProperty(
         name = 'Position x',
         description = 'Do not change when modding, edit .visual instead',
@@ -158,7 +152,7 @@ class ImportGeometry(bpy.types.Operator, ImportHelper):
         print('='*100) #Divider
         print('[Import Info] Import %s' % os.path.basename(self.filepath)) #Filename info
         geometry_model = ModelLoader()
-        geometry_model.load_geometry(self.filepath, self.debug_mode,
+        geometry_model.load_geometry(self.filepath,
                                     (self.disp_x, self.disp_y, self.disp_z),
                                     (self.rot_x*math.pi/180, self.rot_y*math.pi/180, self.rot_z*math.pi/180), #Convert from degrees into radians
                                     (self.scale_x, self.scale_y, self.scale_z))
@@ -166,7 +160,6 @@ class ImportGeometry(bpy.types.Operator, ImportHelper):
 
     def draw(self, context): #Modify the file import window
         layout = self.layout
-        layout.prop(self, 'debug_mode')
         layout.prop(self, 'disp_x')
         layout.prop(self, 'disp_y')
         layout.prop(self, 'disp_z')
@@ -200,12 +193,6 @@ class ExportGeometry(bpy.types.Operator, ExportHelper):
     #---------------------------------------------------------------------------------------------------------
     #Window tab options
 
-    debug_mode : bpy.props.BoolProperty(
-        name = 'Debug Mode',
-        description = 'Will display extra info in the System Console',
-        default = False
-    )
-
     @classmethod
     def poll(self, context): #Check if some condition is met, otherwise export option is greyed out
         return True
@@ -217,6 +204,5 @@ class ExportGeometry(bpy.types.Operator, ExportHelper):
  
     def draw(self, context): #Modify the file export window
         layout = self.layout
-        layout.prop(self, 'debug_mode')
 
 #=============================================================================================================
