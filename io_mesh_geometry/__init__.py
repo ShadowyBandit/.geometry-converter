@@ -35,18 +35,34 @@ def register():
         name = 'Vertex Format',
         default = 'xyznuvtb',
         description = 'Save vertex type for export'
+    )
+    bpy.utils.register_class(BigWorld_Material_Panel) #Register material subpanel addon
 
 def unregister():
     bpy.types.TOPBAR_MT_file_import.remove(menu_import) #Importbar remove option
     bpy.types.TOPBAR_MT_file_export.remove(menu_export) #Exportbar remove option
     bpy.utils.unregister_class(ImportGeometry) #Unregister import addon
     bpy.utils.unregister_class(ExportGeometry) #Unregister export addon
+    bpy.utils.unregister_class(BigWorld_Material_Panel) #Unregister material subpanel addon
 
 def menu_import(self, context):
     self.layout.operator('import.model', text = 'World of Warships Model (.geometry+.visual)', icon='MOD_OCEAN')
 
 def menu_export(self, context):
     self.layout.operator('export.model', text='World of Warships Model (.geometry+.visual)', icon='MOD_OCEAN')
+
+#=============================================================================================================
+#Material Panel
+
+class BigWorld_Material_Panel(bpy.types.Panel):
+    bl_idname = 'MATERIAL_PT_bigworld_material' #Id
+    bl_label = 'BigWorld Material' #Name
+    bl_space_type = 'PROPERTIES' #???
+    bl_region_type = 'WINDOW' #???
+    bl_context = 'material' #Material tab
+
+    def draw(self, context):
+        self.layout.prop(context.material, 'Vertex_Format') #Add vertex type
 
 #=============================================================================================================
 #Import Module

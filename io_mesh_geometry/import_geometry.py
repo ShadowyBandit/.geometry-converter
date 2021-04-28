@@ -22,7 +22,7 @@ class ModelLoader:
         self.vertex_info = []
         self.index_info = []
 
-        self.type_bloc_info = []
+        self.vertex_type_bloc_info = []
         self.index_bloc_info = []
     
     def load_geometry(self, file_path, debug_mode, displacement, rotation, scale):
@@ -71,35 +71,13 @@ class ModelLoader:
                 })
                 
             for i in range(self.counts[0]): #Read vertex bloc info
-                self.type_bloc_info.append({
+                self.vertex_type_bloc_info.append({
                     'vertex_bloc_location'  : unpack('<ixxxx', self.geometry_file.read(8))[0],
                     'vertex_type_string_length' : unpack('<ixxxx', self.geometry_file.read(8))[0],
                     'vertex_type_string_location' : unpack('<ixxxx', self.geometry_file.read(8))[0],
                     'vertex_bloc_length'   : unpack('<i', self.geometry_file.read(4))[0],
                     'single_vertex_length'   : unpack('<hxx', self.geometry_file.read(4))[0]
                 })
-
-            for i in range(
-
-            current_type = ""
-            
-            
-            vertices = [(0, 0, 0),
-                        (0, 0, 1),
-                        (0, 1, 0),]
-            edges = []
-            faces = [(0, 1, 2,)]
-            
-            new_mesh = bpy.data.meshes.new('Mesh')
-            new_mesh.from_pydata(vertices, edges, faces)
-            new_mesh.update()
-            new_mesh.uv_layers.new(name='uv1')
-            uv_layer = new_mesh.uv_layers['uv1'].data[:]
-            new_object = bpy.data.objects.new('temp', new_mesh)
-            new_object.name = "Object"
-            
-            scene = bpy.context.scene
-            scene.collection.objects.link(new_object)
                     
             print(self.counts)
             print("----------------------------------------------------------------------------------------------------")
@@ -111,4 +89,34 @@ class ModelLoader:
             print("----------------------------------------------------------------------------------------------------")
             print(self.index_info)
             print("----------------------------------------------------------------------------------------------------")
-            print(self.type_bloc_info)
+            print(self.vertex_type_bloc_info)
+            print("----------------------------------------------------------------------------------------------------")
+
+            current_type = ""
+            current_type_index = 0
+##            for i in range(self.vertex_info):
+##                if vertex_info[i]['position'] > vertex_type_bloc_info[current_type_index]['vertex_bloc_location']:
+##                    current_type_index++
+##                bookmark = self.geometry_file.tell()
+##                self.seek()
+##                current_type = 
+##                print('%s: %s' % vertex_info[i]['name'])
+            
+            vertices = [(0, 0, 0),
+                        (0, 0, 1),
+                        (0, 1, 0),]
+            edges = []
+            faces = [(0, 1, 2,)]
+            
+            new_mesh = bpy.data.meshes.new('Mesh')
+            new_mesh.from_pydata(vertices, edges, faces)
+            new_mesh.update()
+            new_mesh.uv_layers.new(name='uv1')
+            material = bpy.data.materials.new('Material')
+            new_mesh.materials.append(material)
+            
+            new_object = bpy.data.objects.new('temp', new_mesh)
+            new_object.name = 'Object'
+            
+            scene = bpy.context.scene
+            scene.collection.objects.link(new_object)
