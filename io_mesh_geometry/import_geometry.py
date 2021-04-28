@@ -79,6 +79,8 @@ class ModelLoader:
                     'single_vertex_length'   : unpack('<hxx', self.geometry_file.read(4))[0]
                 })
 
+            for i in range(
+
             current_type = ""
             
             

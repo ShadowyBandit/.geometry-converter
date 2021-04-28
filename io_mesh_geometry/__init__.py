@@ -31,6 +31,10 @@ def register():
     bpy.types.TOPBAR_MT_file_export.append(menu_export) #Exportbar add option
     bpy.utils.register_class(ImportGeometry) #Register import addon
     bpy.utils.register_class(ExportGeometry) #Register export addon
+    bpy.types.Material.Vertex_Format = bpy.props.StringProperty( #Save vertex type for export
+        name = 'Vertex Format',
+        default = 'xyznuvtb',
+        description = 'Save vertex type for export'
 
 def unregister():
     bpy.types.TOPBAR_MT_file_import.remove(menu_import) #Importbar remove option
