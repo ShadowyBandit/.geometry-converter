@@ -79,11 +79,11 @@ class ModelLoader:
                 temp_dictionary['vertex_type_string_location'] = unpack('<i', self.geometry_file.read(4))[0]
                 self.geometry_file.seek(4, 1) #Zeros
                 temp_dictionary['vertex_bloc_length'] = unpack('<i', self.geometry_file.read(4))[0]
-                temp_dictionary['single_vertex_length'] = unpack('<i', self.geometry_file.read(4))[0]
+                temp_dictionary['single_vertex_length'] = unpack('<h', self.geometry_file.read(2))[0]
                 self.geometry_file.seek(2, 1) #Endmark
                 self.type_bloc_info.append(temp_dictionary)
 
-            
+            current_type = ""
             
             vertices = [(0, 0, 0),
                         (0, 0, 1),
@@ -91,12 +91,13 @@ class ModelLoader:
             edges = []
             faces = [(0, 1, 2,)]
             
-            new_mesh = bpy.data.meshes.new('new_mesh')
+            new_mesh = bpy.data.meshes.new('Mesh')
             new_mesh.from_pydata(vertices, edges, faces)
             new_mesh.update()
             new_mesh.uv_layers.new(name='uv1')
             uv_layer = new_mesh.uv_layers['uv1'].data[:]
-            new_object = bpy.data.objects.new('new_object', new_mesh)
+            new_object = bpy.data.objects.new('temp', new_mesh)
+            new_object.name = "Object"
             
             scene = bpy.context.scene
             scene.collection.objects.link(new_object)
