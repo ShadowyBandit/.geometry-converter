@@ -71,32 +71,44 @@ class ModelLoader:
                 })
                 
             for i in range(self.counts[0]): #Read vertex bloc info
-                self.type_bloc_info.append({
-                    'vertex_bloc_location'  : unpack('<i', self.geometry_file.read(4))[0]
-                })
+                temp_dictionary={}
+                temp_dictionary['vertex_bloc_location'] = unpack('<i', self.geometry_file.read(4))[0]
                 self.geometry_file.seek(4, 1) #Zeros
-                self.type_bloc_info.append({
-                    'vertex_type_string_length'  : unpack('<i', self.geometry_file.read(4))[0]
-                })
+                temp_dictionary['vertex_type_string_length'] = unpack('<i', self.geometry_file.read(4))[0]
                 self.geometry_file.seek(4, 1) #Zeros
-                self.type_bloc_info.append({
-                    'vertex_type_string_location'  : unpack('<i', self.geometry_file.read(4))[0]
-                })
+                temp_dictionary['vertex_type_string_location'] = unpack('<i', self.geometry_file.read(4))[0]
                 self.geometry_file.seek(4, 1) #Zeros
-                self.type_bloc_info.append({
-                    'vertex_bloc_length'  : unpack('<i', self.geometry_file.read(4))[0],
-                    'single_vertex_length'  : unpack('<h', self.geometry_file.read(2))[0]
-                })
+                temp_dictionary['vertex_bloc_length'] = unpack('<i', self.geometry_file.read(4))[0]
+                temp_dictionary['single_vertex_length'] = unpack('<i', self.geometry_file.read(4))[0]
                 self.geometry_file.seek(2, 1) #Endmark
-                
-        print(self.counts)
-        print("----------------------------------------------------------------------------------------------------")
-        print(self.info_positions)
-        print("----------------------------------------------------------------------------------------------------")
-        print(self.section_positions)
-        print("----------------------------------------------------------------------------------------------------")
-        print(self.vertex_info)
-        print("----------------------------------------------------------------------------------------------------")
-        print(self.index_info)
-        print("----------------------------------------------------------------------------------------------------")
-        print(self.type_bloc_info)
+                self.type_bloc_info.append(temp_dictionary)
+
+            
+            
+            vertices = [(0, 0, 0),
+                        (0, 0, 1),
+                        (0, 1, 0),]
+            edges = []
+            faces = [(0, 1, 2,)]
+            
+            new_mesh = bpy.data.meshes.new('new_mesh')
+            new_mesh.from_pydata(vertices, edges, faces)
+            new_mesh.update()
+            new_mesh.uv_layers.new(name='uv1')
+            uv_layer = new_mesh.uv_layers['uv1'].data[:]
+            new_object = bpy.data.objects.new('new_object', new_mesh)
+            
+            scene = bpy.context.scene
+            scene.collection.objects.link(new_object)
+                    
+            print(self.counts)
+            print("----------------------------------------------------------------------------------------------------")
+            print(self.info_positions)
+            print("----------------------------------------------------------------------------------------------------")
+            print(self.section_positions)
+            print("----------------------------------------------------------------------------------------------------")
+            print(self.vertex_info)
+            print("----------------------------------------------------------------------------------------------------")
+            print(self.index_info)
+            print("----------------------------------------------------------------------------------------------------")
+            print(self.type_bloc_info)
