@@ -71,19 +71,16 @@ class ModelLoader:
                 })
                 
             for i in range(self.counts[0]): #Read vertex bloc info
-                temp_dictionary={}
-                temp_dictionary['vertex_bloc_location'] = unpack('<i', self.geometry_file.read(4))[0]
-                self.geometry_file.seek(4, 1) #Zeros
-                temp_dictionary['vertex_type_string_length'] = unpack('<i', self.geometry_file.read(4))[0]
-                self.geometry_file.seek(4, 1) #Zeros
-                temp_dictionary['vertex_type_string_location'] = unpack('<i', self.geometry_file.read(4))[0]
-                self.geometry_file.seek(4, 1) #Zeros
-                temp_dictionary['vertex_bloc_length'] = unpack('<i', self.geometry_file.read(4))[0]
-                temp_dictionary['single_vertex_length'] = unpack('<h', self.geometry_file.read(2))[0]
-                self.geometry_file.seek(2, 1) #Endmark
-                self.type_bloc_info.append(temp_dictionary)
+                self.type_bloc_info.append({
+                    'vertex_bloc_location'  : unpack('<ixxxx', self.geometry_file.read(8))[0],
+                    'vertex_type_string_length' : unpack('<ixxxx', self.geometry_file.read(8))[0],
+                    'vertex_type_string_location' : unpack('<ixxxx', self.geometry_file.read(8))[0],
+                    'vertex_bloc_length'   : unpack('<i', self.geometry_file.read(4))[0],
+                    'single_vertex_length'   : unpack('<hxx', self.geometry_file.read(4))[0]
+                })
 
             current_type = ""
+            
             
             vertices = [(0, 0, 0),
                         (0, 0, 1),
