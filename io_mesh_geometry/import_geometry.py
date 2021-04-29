@@ -78,6 +78,11 @@ class ModelLoader:
                     'vertex_type_length'   : unpack('<i', self.geometry_file.read(4))[0],
                     'vertex_length'   : unpack('<hxx', self.geometry_file.read(4))[0]
                 })
+            
+            for i in range(len(self.vertex_info)):
+                self.geometry_file.seek(self.vertex_type_info[self.vertex_info[i]['type_index']]['vertex_type_string_location'])
+                type_raw=self.geometry_file.read(self.vertex_type_info[self.vertex_info[i]['type_index']]['vertex_type_string_length'])
+                self.vertex_info[i]['type'] = type_raw.decode('utf-8').rstrip('\x00')
 
             print("----------------------------------------------------------------------------------------------------")
             temp_print_list=['Vertex type number', 'Index type number', 'Vertex bloc number', 'Index bloc number', 'Collision bloc number', 'Armor bloc number']
@@ -91,7 +96,7 @@ class ModelLoader:
             print("----------------------------------------------------------------------------------------------------")
             for single_vertex_info in self.vertex_info:
                 temp_print_i = 0
-                temp_print_list=['Name', 'Type index', 'Position', 'Vertices count']
+                temp_print_list=['Name', 'Type index', 'Position', 'Vertices count', 'Type']
                 for value in single_vertex_info.values():
                     print(temp_print_list[temp_print_i], ':', value)
                     temp_print_i+=1
@@ -104,15 +109,6 @@ class ModelLoader:
                     print(temp_print_list[temp_print_i], ':', value)
                     temp_print_i+=1
                 print('')
-            print("----------------------------------------------------------------------------------------------------")
-            
-            for i in range(len(self.vertex_info)):
-                self.geometry_file.seek(self.vertex_type_info[self.vertex_info[i]['type_index']]['vertex_type_string_location'])
-                type=self.geometry_file.read(self.vertex_type_info[self.vertex_info[i]['type_index']]['vertex_type_string_length'])
-                print(type)
-                print(type.decode('utf-8'))
-                print('')
-            print("----------------------------------------------------------------------------------------------------")
             
             vertices = [(0, 0, 0),
                         (0, 0, 1),

@@ -156,6 +156,8 @@ class ImportGeometry(bpy.types.Operator, ImportHelper):
                                     (self.disp_x, self.disp_y, self.disp_z),
                                     (self.rot_x*math.pi/180, self.rot_y*math.pi/180, self.rot_z*math.pi/180), #Convert from degrees into radians
                                     (self.scale_x, self.scale_y, self.scale_z))
+        print('='*100) #Divider
+        print('[Import Info] Finished')
         return {'FINISHED'}
 
     def draw(self, context): #Modify the file import window
