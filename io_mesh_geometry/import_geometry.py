@@ -47,37 +47,34 @@ class ModelLoader:
                 self.counts.append(unpack('<i', self.geometry_file.read(4))[0])
 
             for i in range(2): #Read info table locations
-                self.info_positions.append(unpack('<i', self.geometry_file.read(4))[0])
-                self.geometry_file.seek(4, 1)
+                self.info_positions.append(unpack('<ixxxx', self.geometry_file.read(8))[0])
 
             for i in range(4): #Read section locations
-                self.section_positions.append(unpack('<i', self.geometry_file.read(4))[0])
-                self.geometry_file.seek(4, 1)
+                self.section_positions.append(unpack('<ixxxx', self.geometry_file.read(8))[0])
 
-            bookmark = self.geometry_file.tell()
             for i in range(self.counts[2]): #Read vertex info
                 self.vertex_info.append({
                     'name'  : self.geometry_file.read(4).hex(),
-                    'type_number' : unpack('<i', self.geometry_file.read(4))[0],
+                    'type_index' : unpack('<i', self.geometry_file.read(4))[0],
                     'position' : unpack('<i', self.geometry_file.read(4))[0],
                     'vertices_count'   : unpack('<i', self.geometry_file.read(4))[0]
                 })
 
-            bookmark = self.geometry_file.tell()
             for i in range(self.counts[3]): #Read index info
                 self.index_info.append({
                     'name'  : self.geometry_file.read(4).hex(),
-                    'type_number' : unpack('<i', self.geometry_file.read(4))[0],
+                    'type_index' : unpack('<i', self.geometry_file.read(4))[0],
                     'position' : unpack('<i', self.geometry_file.read(4))[0],
                     'indices_count'   : unpack('<i', self.geometry_file.read(4))[0]
                 })
-                
+
+            bookmark = 0
             for i in range(self.counts[0]): #Read vertex bloc info
                 bookmark = self.geometry_file.tell()
                 self.vertex_type_info.append({
                     'vertex_type_location'  : unpack('<ixxxx', self.geometry_file.read(8))[0],
                     'vertex_type_string_length' : unpack('<ixxxx', self.geometry_file.read(8))[0],
-                    'vertex_type_string_location' : unpack('<ixxxx', self.geometry_file.read(8))[0],
+                    'vertex_type_string_location' : unpack('<ixxxx', self.geometry_file.read(8))[0]+bookmark+8,
                     'vertex_type_length'   : unpack('<i', self.geometry_file.read(4))[0],
                     'vertex_length'   : unpack('<hxx', self.geometry_file.read(4))[0]
                 })
@@ -108,16 +105,14 @@ class ModelLoader:
                     temp_print_i+=1
                 print('')
             print("----------------------------------------------------------------------------------------------------")
-
-##            current_type = ""
-##            current_type_index = 0
-##            for i in range(len(self.vertex_info)):
-##                if self.vertex_info[i]['position'] > self.vertex_type_info[current_type_index]['vertex_type_location']:
-##                    current_type_index+=1
-##                
-##                self.geometry_file.seek(self.vertex_type_info[current_type_index]['vertex_type_string_location'])
-##                current_type = self.geometry_file.read(self.vertex_type_info[current_type_index]['vertex_type_string_length']).decode('utf-8')
-##                print('%s: %s' % (self.vertex_info[i]['name'], current_type))
+            
+            for i in range(len(self.vertex_info)):
+                self.geometry_file.seek(self.vertex_type_info[self.vertex_info[i]['type_index']]['vertex_type_string_location'])
+                type=self.geometry_file.read(self.vertex_type_info[self.vertex_info[i]['type_index']]['vertex_type_string_length'])
+                print(type)
+                print(type.decode('utf-8'))
+                print('')
+            print("----------------------------------------------------------------------------------------------------")
             
             vertices = [(0, 0, 0),
                         (0, 0, 1),
