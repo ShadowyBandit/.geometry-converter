@@ -33,7 +33,7 @@ def register():
     bpy.utils.register_class(ExportGeometry) #Register export addon
     bpy.types.Material.Vertex_Format = bpy.props.StringProperty( #Save vertex type for export
         name = 'Vertex Format',
-        default = 'xyznuvtb',
+        default = '',
         description = 'Save vertex type for export'
     )
     bpy.utils.register_class(BigWorld_Material_Panel) #Register material subpanel addon
