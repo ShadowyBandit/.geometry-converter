@@ -39,20 +39,20 @@ class ModelLoader:
         print(' >Start counts: %s' % self.geometry_file.tell())        
         for i in range(6): #Read number of vertex types, index types, vertex blocs, index blocs, collision blocs, and armor blocs
             self.counts.append(unpack('<i', self.geometry_file.read(4))[0])
-        print(' >End counts: %s' % (self.geometry_file.tell()-1))  
         print('counts (vertex types, index types, vertex blocs, index blocs, collision blocs, armor blocs): %s' % self.counts)
+        print(' >End counts: %s \n' % (self.geometry_file.tell()-1))  
 
         print(' >Start info locations: %s' % self.geometry_file.tell()) 
         for i in range(2): #Read info table locations (name, etc)
             self.info_positions.append(unpack('<ixxxx', self.geometry_file.read(8))[0])
-        print(' >End info locations: %s' % (self.geometry_file.tell()-1))  
         print('info table locations: %s' % self.info_positions)
+        print(' >End info locations: %s \n' % (self.geometry_file.tell()-1))  
 
         print(' >Start section locations: %s' % self.geometry_file.tell()) 
         for i in range(4): #Read section locations (start of vertex coords, etc)
             self.section_positions.append(unpack('<ixxxx', self.geometry_file.read(8))[0])
-        print(' >End section locations: %s' % (self.geometry_file.tell()-1))  
         print('section locations: %s' % self.section_positions)
+        print(' >End section locations: %s \n' % (self.geometry_file.tell()-1))  
 
         print(' >Start vertex info: %s' % self.geometry_file.tell()) 
         for i in range(self.counts[2]): #Read vertex info
@@ -64,7 +64,7 @@ class ModelLoader:
                 'vertices_count'   : unpack('<i', self.geometry_file.read(4))[0],
                 'type' : None
             })
-        print(' >End vertex info: %s' % (self.geometry_file.tell()-1)) 
+        print(' >End vertex info: %s \n' % (self.geometry_file.tell()-1)) 
         
         print(' >Start index info: %s' % self.geometry_file.tell()) 
         for i in range(self.counts[3]): #Read index info
@@ -76,7 +76,7 @@ class ModelLoader:
                 'indices_count'   : unpack('<i', self.geometry_file.read(4))[0],
                 'type' : None
             })
-        print(' >End index info: %s' % (self.geometry_file.tell()-1)) 
+        print(' >End index info: %s \n' % (self.geometry_file.tell()-1)) 
         
         print(' >Start vertex type info: %s' % self.geometry_file.tell()) 
         for i in range(self.counts[0]): #Read vertex type info
@@ -88,8 +88,8 @@ class ModelLoader:
                 'vertex_type_length'   : unpack('<i', self.geometry_file.read(4))[0],
                 'single_vertex_length'   : unpack('<hxx', self.geometry_file.read(4))[0]
             })
-        print(' >End vertex type info: %s' % (self.geometry_file.tell()-1)) 
         print('vertex type info: %s' % self.vertex_type_info)
+        print(' >End vertex type info: %s \n' % (self.geometry_file.tell()-1)) 
         
         for i in range(len(self.vertex_info)): #Go to the type string for each type and fill in info for each vertex bloc
             self.geometry_file.seek(self.vertex_type_info[self.vertex_info[i]['type_index']]['vertex_type_string_location'])
@@ -107,8 +107,8 @@ class ModelLoader:
                 'index_type_number' : unpack('<h', self.geometry_file.read(2))[0],
                 'single_index_length'   : unpack('<h', self.geometry_file.read(2))[0]
             })
-        print(' >End index type info: %s' % (self.geometry_file.tell()-1)) 
         print('index type info: %s' % self.index_type_info)
+        print(' >End index type info: %s \n' % (self.geometry_file.tell()-1)) 
         
         for i in range(len(self.index_info)): #Go to the type string for each type and fill in info for each index bloc
             type_raw=self.index_type_info[self.index_info[i]['type_index']]['index_type_number']
@@ -149,45 +149,45 @@ class ModelLoader:
             else:
                 raise Exception('[Import Error] Unrecognized import format.')
             self.data.append({
-                'vertices'  : temp_vertices,
-                'indices'  : None,
-                'vertices_count'  : len(temp_vertices),
-                'indices_count'  : None,
-                'uv'  : None
+                'vertices'          : temp_vertices,
+                'indices'           : [],
+                'vertices_count'    : len(temp_vertices),
+                'indices_count'     : 0,
+                'uv'                : None,
+                '???'               : self.vertex_info[i]['???']
             })
-            print(' >End vertex data: %s' % (self.geometry_file.tell()-1)) 
+            print(' >End vertex data: %s \n' % (self.geometry_file.tell()-1)) 
         
         for i in range(int(len(self.index_info))):
-            self.geometry_file.seek(self.index_info[i]['position']+self.index_type_info[self.index_info[i]['type_index']]['index_type_location'])
-##            print(' >Start index data: %s' % self.geometry_file.tell()) 
+            self.geometry_file.seek(self.index_info[i]['position']*self.index_type_info[self.index_info[i]['type_index']]['single_index_length']+self.index_type_info[self.index_info[i]['type_index']]['index_type_location'])
+            print(' >Start index data: %s' % self.geometry_file.tell()) 
             temp_indices = []
             temp_max = 0
             if self.index_info[i]['type'] == 'list16':
                 for ii in range(int(self.index_info[i]['indices_count']/3)):
                     temp=self.geometry_file.read(6)
-                    (a,b,c)=unpack('<3h', temp)
+                    (a,b,c)=unpack('<3H', temp)
                     temp_indices.append((a,b,c))
                     temp_max = max(temp_max, a, b, c)
             else:
                 for ii in range(int(self.index_info[i]['indices_count']/3)):
                     temp=self.geometry_file.read(12)
-                    (a,b,c)=unpack('<3i', temp)
+                    (a,b,c)=unpack('<3I', temp)
                     temp_indices.append((a,b,c))
                     temp_max = max(temp_max, a, b, c)
-                    
             for ii in self.data:
-                if temp_max+1 == ii['vertices_count'] and ii['indices'] == None:
+                if self.index_info[i]['???'] == ii['???'] and temp_max+1==ii['vertices_count']:
+                    print(temp_max)
+                    print(ii['vertices_count'])
+                    print(ii['???'])
                     ii['indices']=temp_indices
                     ii['indices_count']=len(temp_indices)
-##                print(self.data[0]['vertices'])
-##                print(self.data[0]['indices'])
-##            print(' >End index data: %s' % (self.geometry_file.tell()-1)) 
-
+            print(' >End index data: %s \n' % (self.geometry_file.tell()-1)) 
 ##            print(self.data[0])
 
         for i in range(len(self.data)):
             new_mesh = bpy.data.meshes.new('Mesh')
-            new_mesh.from_pydata(self.data[i]['vertices'], [], [])
+            new_mesh.from_pydata(self.data[i]['vertices'], [], self.data[i]['indices'])
             new_mesh.update()
             new_mesh.uv_layers.new(name='UVMap')
             material = bpy.data.materials.new('Material')
